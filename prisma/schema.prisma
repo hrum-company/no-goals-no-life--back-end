@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id Int @id @default(autoincrement())
+  vkId BigInt @unique
+  goalLists GoalList[]
+
+  createdAt DateTime @default(now())
+}
+
+model GoalList {
+  id Int @id @default(autoincrement())
+  
+  userId Int 
+  user User @relation(fields: [userId], references: [id])
+
+  name String
+
+  hidden Boolean
+
+  goals Goal[]
+
+  createdAt DateTime @default(now())
+}
+
+model Goal {
+  id Int @id @default(autoincrement())
+
+  list GoalList @relation(fields: [listId], references: [id])
+  listId Int
+
+  name String
+  description String
+
+  completed Boolean
+
+  createdAt DateTime @default(now())
+  completedAt DateTime?
+}
