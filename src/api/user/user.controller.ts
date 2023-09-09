@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common'
+import { Controller, Get, Request } from '@nestjs/common'
 import { User } from './user.interface'
 import { PrismaService } from '../_services/prisma.service'
 
@@ -7,13 +7,7 @@ export class UserController {
   constructor(private readonly prismaService: PrismaService) {}
 
   @Get('me')
-  async me(): Promise<User> {
-    const user = await this.prismaService.user.findUnique({
-      where: {
-        vkId: 1,
-      },
-    })
-
-    return user
+  async me(@Request() req): Promise<User> {
+    return req.user
   }
 }

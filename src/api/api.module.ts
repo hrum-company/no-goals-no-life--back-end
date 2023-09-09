@@ -1,16 +1,10 @@
 import { GoalListModule } from './goal-list/goal-list.module'
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common'
-import { VkAuthMiddleware } from 'src/middlewares/vk-auth.middleware'
+import { Module } from '@nestjs/common'
 import { UserModule } from './user/user.module'
 import { GoalModule } from './goal/goal.module'
+import { AuthModule } from './auth/auth.module'
 
 @Module({
-  imports: [UserModule, GoalListModule, GoalModule],
-  controllers: [],
-  providers: [],
+  imports: [AuthModule, UserModule, GoalListModule, GoalModule],
 })
-export class ApiModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(VkAuthMiddleware)
-  }
-}
+export class ApiModule {}
