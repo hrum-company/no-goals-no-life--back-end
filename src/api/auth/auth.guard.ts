@@ -19,8 +19,6 @@ export class AuthGuard implements CanActivate {
     const query = request.query
     const secretKey = process.env.VK_SECRET_KEY
 
-    console.log({ secretKey })
-
     if (!secretKey) {
       return false
     }
