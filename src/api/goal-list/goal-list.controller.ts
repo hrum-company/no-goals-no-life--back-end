@@ -1,28 +1,27 @@
-import { Controller, Get, Param } from '@nestjs/common'
-import { GoalList } from './goal-list.interface'
+import { Controller, Get, Param, Request } from '@nestjs/common'
+import { GoalList, User } from '@prisma/client'
+import { GoalListService } from './goal-list.service'
 
 @Controller('api/goal-list')
 export class GoalListController {
+  constructor(private readonly goalListService: GoalListService) {}
+
   @Get()
-  findAll(): GoalList[] {
-    return [
-      {
-        id: 1,
-        userId: 1,
-        name: 'Список мечты',
-        hidden: false,
-      },
-    ]
+  async findAll(@Request() req): Promise<GoalList[]> {
+    const user = req.user as User
+    const goalLists = await this.goalListService.findAll(user)
+
+    if (goalLists.length !== 0) {
+      return goalLists
+    }
+
+    const goalList = await this.goalListService.create(user)
+
+    return [goalList]
   }
 
   @Get('/:id')
-  findOne(@Param('id') id: number): GoalList {
-    return {
-      id,
-      userId: 1,
-      name: 'Список мечты',
-      hidden: false,
-      goals: [],
-    }
+  async findOne(@Param('id') id: number): Promise<GoalList> {
+    return await this.goalListService.findOne(id)
   }
 }
