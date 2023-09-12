@@ -1,6 +1,6 @@
 export interface Goal {
   id: number
-  listId: number
+  bookId: number
 
   name: string
   description?: string

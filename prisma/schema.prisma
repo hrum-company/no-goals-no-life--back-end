@@ -14,12 +14,12 @@ datasource db {
 model User {
   id Int @id @default(autoincrement())
   vkId BigInt @unique
-  goalLists GoalList[]
+  books Book[]
 
   createdAt DateTime @default(now())
 }
 
-model GoalList {
+model Book {
   id Int @id @default(autoincrement())
   
   userId Int 
@@ -37,8 +37,8 @@ model GoalList {
 model Goal {
   id Int @id @default(autoincrement())
 
-  list GoalList @relation(fields: [listId], references: [id])
-  listId Int
+  book Book @relation(fields: [bookId], references: [id])
+  bookId Int
 
   name String
   description String

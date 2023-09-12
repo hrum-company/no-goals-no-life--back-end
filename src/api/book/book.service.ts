@@ -3,15 +3,15 @@ import { PrismaService } from '../_services/prisma.service'
 import { User } from '@prisma/client'
 
 @Injectable()
-export class GoalListService {
+export class BookService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async canEdit(userId: number, id: number) {
-    return !!(await this.prismaService.goalList.count({ where: { userId, id } }))
+    return !!(await this.prismaService.book.count({ where: { userId, id } }))
   }
 
   async canCreate(user: User) {
-    const lists = await this.prismaService.goalList.findMany({
+    const books = await this.prismaService.book.findMany({
       include: {
         _count: {
           select: {
@@ -24,11 +24,11 @@ export class GoalListService {
       },
     })
 
-    return lists.every((list) => list._count.goals === 100)
+    return books.every((list) => list._count.goals === 100)
   }
 
   async getCount(user: User) {
-    return await this.prismaService.goalList.count({
+    return await this.prismaService.book.count({
       where: {
         userId: user.id,
       },
@@ -36,15 +36,13 @@ export class GoalListService {
   }
 
   async create(user: User) {
-    const goalList = await this.prismaService.goalList.create({
+    return await this.prismaService.book.create({
       data: { name: '100 жизненных целей', userId: user.id, hidden: false },
     })
-
-    return goalList
   }
 
   async findAll(user: User) {
-    return await this.prismaService.goalList.findMany({
+    return await this.prismaService.book.findMany({
       include: {
         goals: true,
       },
@@ -55,7 +53,7 @@ export class GoalListService {
   }
 
   async findOne(id: number) {
-    return await this.prismaService.goalList.findUnique({
+    return await this.prismaService.book.findUnique({
       where: { id },
     })
   }

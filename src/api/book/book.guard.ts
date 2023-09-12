@@ -1,20 +1,20 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common'
-import { GoalListService } from './goal-list.service'
+import { BookService } from './book.service'
 
 @Injectable()
-export class GoalListGuard implements CanActivate {
-  constructor(private readonly goalListService: GoalListService) {}
+export class BookGuard implements CanActivate {
+  constructor(private readonly bookService: BookService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest()
 
-    if (!request.params.listId) {
+    if (!request.params.bookId) {
       return false
     }
 
     const userId = Number(request.user.id)
-    const listId = Number(request.params.listId)
-    const canEdit = await this.goalListService.canEdit(userId, listId)
+    const bookId = Number(request.params.bookId)
+    const canEdit = await this.bookService.canEdit(userId, bookId)
 
     if (!canEdit) {
       return false

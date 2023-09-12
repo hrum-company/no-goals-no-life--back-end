@@ -5,10 +5,10 @@ import { PrismaService } from '../_services/prisma.service'
 export class GoalService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(listId: number, name: string, description: string, completed: boolean = false) {
+  async create(bookId: number, name: string, description: string, completed: boolean = false) {
     return await this.prismaService.goal.create({
       data: {
-        listId,
+        bookId,
         name,
         description,
         completed,
@@ -16,19 +16,19 @@ export class GoalService {
     })
   }
 
-  async findOne(listId: number, id: number) {
+  async findOne(bookId: number, id: number) {
     return await this.prismaService.goal.findUnique({
       where: {
         id,
-        listId,
+        bookId,
       },
     })
   }
 
-  async update(listId: number, id: number, description: string) {
+  async update(bookId: number, id: number, description: string) {
     return await this.prismaService.goal.update({
       where: {
-        listId,
+        bookId,
         id,
       },
       data: {
