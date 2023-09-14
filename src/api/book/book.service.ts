@@ -44,7 +44,20 @@ export class BookService {
   async findAll(user: User) {
     return await this.prismaService.book.findMany({
       include: {
-        goals: true,
+        goals: {
+          orderBy: {
+            order: 'asc',
+          },
+        },
+        _count: {
+          select: {
+            goals: {
+              where: {
+                completed: true,
+              },
+            },
+          },
+        },
       },
       where: {
         userId: user.id,
@@ -54,6 +67,22 @@ export class BookService {
 
   async findOne(id: number) {
     return await this.prismaService.book.findUnique({
+      include: {
+        goals: {
+          orderBy: {
+            order: 'asc',
+          },
+        },
+        _count: {
+          select: {
+            goals: {
+              where: {
+                completed: true,
+              },
+            },
+          },
+        },
+      },
       where: { id },
     })
   }

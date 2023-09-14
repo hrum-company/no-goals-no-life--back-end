@@ -35,4 +35,10 @@ export class GoalController {
   ): Promise<Goal> {
     return await this.goalService.update(Number(bookId), Number(id), body.description)
   }
+
+  @Put('/:id/complete')
+  @UseGuards(BookGuard)
+  async complete(@Param('bookId') bookId: number, @Param('id') id: number): Promise<Goal> {
+    return await this.goalService.complete(Number(bookId), Number(id))
+  }
 }

@@ -43,6 +43,8 @@ model Goal {
   name String
   description String
 
+  order Int @default(0)
+
   completed Boolean
 
   createdAt DateTime @default(now())
