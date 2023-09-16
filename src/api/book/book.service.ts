@@ -86,4 +86,30 @@ export class BookService {
       where: { id },
     })
   }
+
+  async update(id: number, name: string, hidden: boolean) {
+    return await this.prismaService.book.update({
+      include: {
+        goals: {
+          orderBy: {
+            order: 'asc',
+          },
+        },
+        _count: {
+          select: {
+            goals: {
+              where: {
+                completed: true,
+              },
+            },
+          },
+        },
+      },
+      where: { id },
+      data: {
+        name,
+        hidden,
+      },
+    })
+  }
 }

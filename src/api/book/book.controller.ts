@@ -1,9 +1,15 @@
-import { Controller, Get, Param, Request } from '@nestjs/common'
+import { Body, Controller, Get, Param, Put, Request, UseGuards } from '@nestjs/common'
 import { Book, Book as BookModel, User } from '@prisma/client'
 import { BookService } from './book.service'
+import { BookGuard } from './book.guard'
 
 type WithCompletedGoalsCount<T> = T & {
   completedGoalsCount: number
+}
+
+interface EditBookRequest {
+  name: string
+  hidden: boolean
 }
 
 @Controller('api/book')
@@ -28,8 +34,21 @@ export class BookController {
     }))
   }
 
-  @Get('/:id')
-  async findOne(@Param('id') id: number): Promise<BookModel> {
+  @Get('/:bookId')
+  async findOne(@Param('bookId') id: number): Promise<BookModel> {
     return await this.bookService.findOne(id)
+  }
+
+  @Put('/:bookId')
+  @UseGuards(BookGuard)
+  async edit(
+    @Param('bookId') id: number,
+    @Body() body: EditBookRequest
+  ): Promise<WithCompletedGoalsCount<Book>> {
+    const book = await this.bookService.update(Number(id), body.name, body.hidden)
+    return {
+      ...book,
+      completedGoalsCount: book._count.goals,
+    }
   }
 }
