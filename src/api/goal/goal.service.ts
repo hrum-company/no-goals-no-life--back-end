@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../_services/prisma.service'
+import { Goal } from '@prisma/client'
+
+type CreateGoalData = Partial<Pick<Goal, 'markId' | 'description'>> & Pick<Goal, 'name'>
+type EditGoalData = Partial<Pick<Goal, 'markId' | 'description'>>
 
 @Injectable()
 export class GoalService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(bookId: number, name: string, description: string, completed: boolean = false) {
+  async create(bookId: number, { markId, name, description }: CreateGoalData) {
     const goalsCountInBook = await this.prismaService.goal.count({
       where: {
         bookId,
@@ -15,9 +19,10 @@ export class GoalService {
     return await this.prismaService.goal.create({
       data: {
         bookId,
+        markId,
         name,
         description,
-        completed,
+        completed: false,
         order: goalsCountInBook + 1,
       },
     })
@@ -32,13 +37,14 @@ export class GoalService {
     })
   }
 
-  async update(bookId: number, id: number, description: string) {
+  async update(id: number, bookId: number, { markId, description }: EditGoalData) {
     return await this.prismaService.goal.update({
       where: {
         bookId,
         id,
       },
       data: {
+        markId,
         description,
       },
     })

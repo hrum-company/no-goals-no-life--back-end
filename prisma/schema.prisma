@@ -47,6 +47,9 @@ model Goal {
   book Book @relation(fields: [bookId], references: [id])
   bookId Int
 
+  mark GoalMark? @relation(fields: [markId], references: [id])
+  markId Int?
+
   name String @db.VarChar(255)
   description String
 
@@ -56,4 +59,12 @@ model Goal {
 
   createdAt DateTime @default(now())
   completedAt DateTime?
+}
+
+model GoalMark {
+  id Int @id @default(autoincrement())
+  title String @db.VarChar(255)
+  icon String
+
+  goals Goal[]
 }

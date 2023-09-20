@@ -4,11 +4,13 @@ import { Goal } from '@prisma/client'
 import { BookGuard } from '../book/book.guard'
 
 interface CreateGoalRequest {
+  markId?: number
   name: string
-  description: string
+  description?: string
 }
 interface EditGoalRequest {
-  description: string
+  markId?: number
+  description?: string
 }
 
 @Controller('api/book/:bookId/goal')
@@ -18,7 +20,9 @@ export class GoalController {
   @Post('')
   @UseGuards(BookGuard)
   async create(@Param('bookId') bookId: number, @Body() body: CreateGoalRequest): Promise<Goal> {
-    return await this.goalService.create(Number(bookId), body.name, body.description)
+    return await this.goalService.create(bookId, {
+      ...body,
+    })
   }
 
   @Get('/:id')
@@ -33,7 +37,9 @@ export class GoalController {
     @Param('id') id: number,
     @Body() body: EditGoalRequest
   ): Promise<Goal> {
-    return await this.goalService.update(Number(bookId), Number(id), body.description)
+    return await this.goalService.update(id, bookId, {
+      ...body,
+    })
   }
 
   @Put('/:id/complete')
