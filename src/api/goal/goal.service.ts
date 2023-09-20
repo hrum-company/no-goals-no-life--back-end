@@ -30,6 +30,9 @@ export class GoalService {
 
   async findOne(bookId: number, id: number) {
     return await this.prismaService.goal.findUnique({
+      include: {
+        mark: true,
+      },
       where: {
         id,
         bookId,

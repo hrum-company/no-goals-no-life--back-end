@@ -45,6 +45,9 @@ export class BookService {
     return await this.prismaService.book.findMany({
       include: {
         goals: {
+          include: {
+            mark: true,
+          },
           orderBy: {
             order: 'asc',
           },
@@ -69,6 +72,9 @@ export class BookService {
     return await this.prismaService.book.findUnique({
       include: {
         goals: {
+          include: {
+            mark: true,
+          },
           orderBy: {
             order: 'asc',
           },
