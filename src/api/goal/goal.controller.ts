@@ -1,5 +1,5 @@
 import { GoalService } from './goal.service'
-import { Body, Controller, Param, Post, Get, Put, UseGuards } from '@nestjs/common'
+import { Body, Controller, Param, Post, Get, Put, UseGuards, ParseIntPipe } from '@nestjs/common'
 import { Goal } from '@prisma/client'
 import { BookGuard } from '../book/book.guard'
 
@@ -19,22 +19,28 @@ export class GoalController {
 
   @Post('')
   @UseGuards(BookGuard)
-  async create(@Param('bookId') bookId: number, @Body() body: CreateGoalRequest): Promise<Goal> {
+  async create(
+    @Param('bookId', ParseIntPipe) bookId: number,
+    @Body() body: CreateGoalRequest
+  ): Promise<Goal> {
     return await this.goalService.create(bookId, {
       ...body,
     })
   }
 
   @Get('/:id')
-  async findOne(@Param('bookId') bookId: number, @Param('id') id: number): Promise<Goal> {
+  async findOne(
+    @Param('bookId', ParseIntPipe) bookId: number,
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<Goal> {
     return await this.goalService.findOne(Number(bookId), Number(id))
   }
 
   @Put('/:id')
   @UseGuards(BookGuard)
   async edit(
-    @Param('bookId') bookId: number,
-    @Param('id') id: number,
+    @Param('bookId', ParseIntPipe) bookId: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() body: EditGoalRequest
   ): Promise<Goal> {
     return await this.goalService.update(id, bookId, {
@@ -44,7 +50,10 @@ export class GoalController {
 
   @Put('/:id/complete')
   @UseGuards(BookGuard)
-  async complete(@Param('bookId') bookId: number, @Param('id') id: number): Promise<Goal> {
+  async complete(
+    @Param('bookId', ParseIntPipe) bookId: number,
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<Goal> {
     return await this.goalService.complete(Number(bookId), Number(id))
   }
 }
