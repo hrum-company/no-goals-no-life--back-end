@@ -3,9 +3,13 @@ import { Book, User } from '@prisma/client'
 import { PrismaService } from '../_services/prisma.service'
 import { BookService } from '../book/book.service'
 
+type WithCompletedGoalsCount<T> = T & {
+  completedGoalsCount: number
+}
+
 interface FriendsBook {
   user: User
-  book: Book
+  book: WithCompletedGoalsCount<Book>
 }
 
 @Controller('api/friends-book')
@@ -23,7 +27,16 @@ export class FriendsBookController {
 
     for (const user of users) {
       const books = await this.bookService.findAll(user)
-      const currentFriendsBooks: FriendsBook[] = books.map((book) => ({ book, user }))
+
+      const normalizedBooks = books.map(({ _count: count, ...book }) => ({
+        ...book,
+        completedGoalsCount: count.goals,
+      }))
+
+      const currentFriendsBooks: FriendsBook[] = normalizedBooks.map((book) => ({
+        book,
+        user,
+      }))
 
       friendsBooks = friendsBooks.concat(currentFriendsBooks)
     }
