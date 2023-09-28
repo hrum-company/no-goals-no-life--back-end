@@ -60,16 +60,23 @@ export class AuthController {
 
     const vkId = Number(query.vk_user_id)
 
+    const userData: AuthBody = {
+      first_name: body.first_name,
+      last_name: body.last_name,
+      photo_100: body.photo_100,
+      photo_200: body.photo_200,
+    }
+
     const user = await this.prismaService.user.upsert({
       where: {
         vkId,
       },
       update: {
-        ...body,
+        ...userData,
       },
       create: {
         vkId,
-        ...body,
+        ...userData,
       },
     })
 
